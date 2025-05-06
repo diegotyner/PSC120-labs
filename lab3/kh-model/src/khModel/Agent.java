@@ -67,7 +67,7 @@ public class Agent implements Steppable {
 		Bag neighbors = state.sparseSpace.getMooreNeighbors(x, y, state.dateSearchRadius,
 				state.sparseSpace.TOROIDAL, true);
 		return null; // a place holder for when you will return an agent that has not dated or null
-				// if none can be found or all of dated
+		// if none can be found or all of dated
 	}
 
 	public void replicate(Environment state, boolean gender) {
@@ -244,8 +244,10 @@ public class Agent implements Steppable {
 			// remove successful agents
 			remove(state);
 			a.remove(state);
-			replicate(state, true); // replicates a male and a female
-			replicate(state, false);
+			if (state.replication) {
+				replicate(state, true); // replicates a male and a female
+				replicate(state, false);
+			}
 			// : When replacement is checked, code is needed here to handle replacement
 		} // end if test
 		else {// add unsucessful agents to the next populations
