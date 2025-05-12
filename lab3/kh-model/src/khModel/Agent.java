@@ -64,10 +64,18 @@ public class Agent implements Steppable {
 	 */
 
 	public Agent findLocalDate(Environment state) {
-		Bag neighbors = state.sparseSpace.getMooreNeighbors(x, y, state.dateSearchRadius,
-				state.sparseSpace.TOROIDAL, true);
-		return null; // a place holder for when you will return an agent that has not dated or null
-		// if none can be found or all of dated
+		Bag neighbors = state.sparseSpace.getMooreNeighbors(x, y, state.dateSearchRadius, state.sparseSpace.TOROIDAL, true);
+
+		for (int i = 0; i < neighbors.numObjs; i++) {
+			Agent a = (Agent) neighbors.objs[i];
+			if (a != this && !a.dated) {
+				this.dated = true;
+				a.dated = true;
+				return a;
+			}
+		}
+
+		return null; // This happens after no satisfying agent is found.
 	}
 
 	public void replicate(Environment state, boolean gender) {
@@ -102,10 +110,15 @@ public class Agent implements Steppable {
 		state.sparseSpace.setObjectLocation(f, x, y);
 		state.gui.setOvalPortrayal2DColor(f, (float) 1, (float) 0, (float) 0,
 				(float) (attractiveness / state.maxAttractiveness));
-		if (gender)
+		if (gender) {
 			state.female.add(f);
-		else
+			state.gui.setOvalPortrayal2DColor(f, (float) 1, (float) 0, (float) 0,
+					(float) (attractiveness / state.maxAttractiveness));
+		} else {
 			state.male.add(f);
+			state.gui.setOvalPortrayal2DColor(f, (float) 0, (float) 0, (float) 1,
+					(float) (attractiveness / state.maxAttractiveness));
+		}
 	}
 
 	/**
