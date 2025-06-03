@@ -54,6 +54,10 @@ public class Agent implements Steppable {
 		}
 		// create memory for memory agents with a switch statement.
 		switch (strategy) {
+			case GRIM_MOBILE:
+				;
+			case GRIM_STATIONARY:
+				;
 			case TFT_MOBILE:
 				;
 			case TFT_STATIONARY:
@@ -94,6 +98,10 @@ public class Agent implements Steppable {
 				; // skip to next return
 			case PAVLOV_STATIONARY:
 				return getStrategyPAVLOV(opponent);
+			case GRIM_MOBILE:
+				;
+			case GRIM_STATIONARY:
+				return getStrategyGRIM(opponent);
 			default: // just in case there are no matches, return cooperate, which should not happen
 				return Strategy.COOPERATOR;
 		}
@@ -154,6 +162,24 @@ public class Agent implements Steppable {
 
 	}
 
+	public Strategy getStrategyGRIM(Agent opponent) {
+		Triple m = memory.getLastMemory(opponent);
+		if (m == null) {
+			return Strategy.COOPERATOR;
+		}
+		if (m.myStrategy == Strategy.DEFECTOR) {
+			return Strategy.DEFECTOR;
+		}
+		switch (m.opponentStrategy) {
+			case COOPERATOR:
+				return Strategy.COOPERATOR;
+			case DEFECTOR:
+				return Strategy.DEFECTOR;
+			default:
+				return Strategy.COOPERATOR;
+		}
+	}
+
 	/**
 	 * Calculates an agent's payoff given the strategy it played and the strategy of
 	 * its opponent. There are two "play" methods. This plays the prisoner's dilemma
@@ -196,6 +222,10 @@ public class Agent implements Steppable {
 		// strategies
 		// to update their memory.
 		switch (myStrategy) {
+			case GRIM_MOBILE:
+				;
+			case GRIM_STATIONARY:
+				;
 			case TFT_STATIONARY:
 				;
 			case TFT_MOBILE:
@@ -329,6 +359,8 @@ public class Agent implements Steppable {
 			case TFT_MOBILE:
 				;
 			case PAVLOV_MOBILE:
+				;
+			case GRIM_MOBILE:
 				mobileStrategy(state); // Handles all mobiles
 				break;
 			case WALKAWAY_COOPERATOR:
@@ -338,6 +370,8 @@ public class Agent implements Steppable {
 				break;
 
 			// See lab on instructions how to complete this method.
+			case GRIM_STATIONARY:
+				;
 			case TFT_STATIONARY:
 				; // fall thru
 			case PAVLOV_STATIONARY:
@@ -536,6 +570,12 @@ public class Agent implements Steppable {
 				break;
 			case PAVLOV_MOBILE: // Light/soft pink -> Cyan
 				state.gui.setOvalPortrayal2DColor(a, (float) 0.2, (float) 1, (float) 1, (float) 1);
+				break;
+			case GRIM_STATIONARY: // Light yellow
+				state.gui.setOvalPortrayal2DColor(a, (float) 0.8, (float) 1, (float) 0.5, (float) 1);
+				break;
+			case GRIM_MOBILE: // ?
+				state.gui.setOvalPortrayal2DColor(a, (float) 0.2, (float) 0.2, (float) 0.2, (float) 1);
 				break;
 
 			default:

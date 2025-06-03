@@ -15,6 +15,8 @@ public class Environment extends SimStateSweep {
 	public int _tftStationary = 0;// initial number of tit for tat stationary
 	public int _pavlovMobile = 0;// initial number of pavlov mobile
 	public int _pavlovStationary = 0;// initial number of pavlov stationary
+	public int _grimMobile = 0;// initial number of GRIM
+	public int _grimStationary = 0;// initial number of GRIM
 	public int memorySize = 3; // size of an agent's memory of TFT and PAVLOV strategies
 	public double active = 1.0; // probability of random movement
 	public boolean groups_or_patches = false; // Multiple agents can be in the same location or what we will call group
@@ -111,6 +113,22 @@ public class Environment extends SimStateSweep {
 
 	public void set_pavlovStationary(int _pavlovStationary) {
 		this._pavlovStationary = _pavlovStationary;
+	}
+
+	public int get_grimMobile() {
+		return _grimMobile;
+	}
+
+	public void set_grimMobile(int _grimMobile) {
+		this._grimMobile = _grimMobile;
+	}
+
+	public int get_grimStationary() {
+		return _grimStationary;
+	}
+
+	public void set_grimStationary(int _grimStationary) {
+		this._grimStationary = _grimStationary;
 	}
 
 	public int getMemorySize() {
@@ -487,11 +505,45 @@ public class Environment extends SimStateSweep {
 			int ydir = random.nextInt(3) - 1;
 			double resources = (maxResourcesStart - minResourcesStart) * random.nextDouble() + minResourcesStart;
 			long id = this.id++;
-			Agent agent = new Agent(this, id, Strategy.PAVLOV_STATIONARY, resources, location.x, location.y, xdir, ydir, true);
+			Agent agent = new Agent(this, id, Strategy.PAVLOV_STATIONARY, resources, location.x, location.y, xdir, ydir,
+					true);
 			agent.event = schedule.scheduleRepeating(agent);
 			sparseSpace.setObjectLocation(agent, random.nextInt(gridWidth), random.nextInt(gridHeight));
 			agent.colorByStrategy(agent.strategy, this, agent);
 		}
+
+		for (int i = 0; i < this._grimMobile; i++) {
+			Int2D location;
+			if (!groups_or_patches)
+				location = emptyXY();
+			else
+				location = locationXY();
+			int xdir = random.nextInt(3) - 1;
+			int ydir = random.nextInt(3) - 1;
+			double resources = (maxResourcesStart - minResourcesStart) * random.nextDouble() + minResourcesStart;
+			long id = this.id++;
+			Agent agent = new Agent(this, id, Strategy.GRIM_MOBILE, resources, location.x, location.y, xdir, ydir, true);
+			agent.event = schedule.scheduleRepeating(agent);
+			sparseSpace.setObjectLocation(agent, random.nextInt(gridWidth), random.nextInt(gridHeight));
+			agent.colorByStrategy(agent.strategy, this, agent);
+		}
+		
+		for (int i = 0; i < this._grimStationary; i++) {
+			Int2D location;
+			if (!groups_or_patches)
+				location = emptyXY();
+			else
+				location = locationXY();
+			int xdir = random.nextInt(3) - 1;
+			int ydir = random.nextInt(3) - 1;
+			double resources = (maxResourcesStart - minResourcesStart) * random.nextDouble() + minResourcesStart;
+			long id = this.id++;
+			Agent agent = new Agent(this, id, Strategy.GRIM_STATIONARY, resources, location.x, location.y, xdir, ydir, true);
+			agent.event = schedule.scheduleRepeating(agent);
+			sparseSpace.setObjectLocation(agent, random.nextInt(gridWidth), random.nextInt(gridHeight));
+			agent.colorByStrategy(agent.strategy, this, agent);
+		}
+
 
 		makeMutationList();// makes the list of possible mutations based on whether there are initial
 												// agents > 0 for a strategy
